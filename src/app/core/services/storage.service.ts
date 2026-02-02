@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Preferences } from '@capacitor/preferences';
 import { Store } from '@ngrx/store';
+import { take } from 'rxjs/operators';
 import { AppState } from '../../store/app.state';
 import * as GameActions from '../../store/game/game.actions';
 import * as EconomyActions from '../../store/economy/economy.actions';
@@ -106,11 +107,11 @@ export class StorageService {
     async saveData(): Promise<void> {
         try {
             // Get current state from store
-            let currentState: AppState | null = null;
+            let currentState: AppState | undefined;
 
-            this.store.select(state => state).subscribe(state => {
+            this.store.pipe(take(1)).subscribe(state => {
                 currentState = state;
-            }).unsubscribe();
+            });
 
             if (!currentState) {
                 console.error('Failed to get current state');

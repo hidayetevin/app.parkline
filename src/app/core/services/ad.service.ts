@@ -42,7 +42,6 @@ export class AdService {
 
         try {
             await AdMob.initialize({
-                requestTrackingAuthorization: true,
                 testingDevices: ['EMULATOR'],
                 initializeForTesting: true
             });
@@ -156,24 +155,32 @@ export class AdService {
             return null;
         }
 
-        return new Promise((resolve) => {
-            const onReward = AdMob.addListener(RewardAdPluginEvents.Rewarded, (reward: AdMobRewardItem) => {
+        let onReward: any;
+        let onDismiss: any;
+
+        return new Promise(async (resolve) => {
+            onReward = await AdMob.addListener(RewardAdPluginEvents.Rewarded, (reward: AdMobRewardItem) => {
                 resolve(reward);
-                onReward.remove(); // Cleanup listener
+                if (onReward) onReward.remove();
+                if (onDismiss) onDismiss.remove();
             });
 
-            const onDismiss = AdMob.addListener(RewardAdPluginEvents.Dismissed, () => {
-                // If dismissed without reward, this might race with onReward
-                // Better logic handled by state but simple implementation for now
-                setTimeout(() => resolve(null), 500);
-                onDismiss.remove();
+            onDismiss = await AdMob.addListener(RewardAdPluginEvents.Dismissed, () => {
+                // Wait small delay to allow race with Rewarded event
+                setTimeout(() => {
+                    resolve(null);
+                    if (onReward) onReward.remove();
+                    if (onDismiss) onDismiss.remove();
+                }, 500);
             });
 
-            AdMob.showRewardVideoAd().catch(() => {
-                onReward.remove();
-                onDismiss.remove();
+            try {
+                await AdMob.showRewardVideoAd();
+            } catch (error) {
+                if (onReward) onReward.remove();
+                if (onDismiss) onDismiss.remove();
                 resolve(null);
-            });
+            }
         });
     }
 
