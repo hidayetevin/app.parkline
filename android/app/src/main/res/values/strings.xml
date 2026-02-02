@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">park-master</string>
+    <string name="title_activity_main">park-master</string>
+    <string name="package_name">com.yourstudio.parkmaster</string>
+    <string name="custom_url_scheme">com.yourstudio.parkmaster</string>
+</resources>

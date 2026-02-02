@@ -1,0 +1,21 @@
+# Park Master - Development Tasks
+
+- [ ] **Phase 1: Foundation & Architecture** <!-- id: 0 -->
+    - [ ] Project Initialization & Usage of Three.js <!-- id: 1 -->
+    - [ ] State Management (NgRx) <!-- id: 2 -->
+    - [ ] Asset Manager System <!-- id: 3 -->
+- [ ] **Phase 2: Gameplay Core** <!-- id: 4 -->
+    - [ ] Physics & Car Controller <!-- id: 5 -->
+    - [ ] Scene Manager & Game Loop <!-- id: 6 -->
+    - [ ] Level System <!-- id: 7 -->
+    - [ ] Game Logic & Rules <!-- id: 8 -->
+- [ ] **Phase 3: UI & Interaction** <!-- id: 9 -->
+    - [ ] Main Menu & Garage <!-- id: 10 -->
+    - [ ] Gameplay HUD <!-- id: 11 -->
+    - [ ] Tutorial & Hints <!-- id: 12 -->
+- [ ] **Phase 4: Economy & Services** <!-- id: 13 -->
+    - [ ] Ads & IAP <!-- id: 14 -->
+    - [ ] Data Persistence <!-- id: 15 -->
+- [ ] **Phase 5: Build & Polish** <!-- id: 16 -->
+    - [ ] Final Content & Localization <!-- id: 17 -->
+    - [ ] Build & Release Operations <!-- id: 18 -->

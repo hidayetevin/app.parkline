@@ -1,0 +1,30 @@
+{
+    "MENU": {
+        "PLAY": "OYNA",
+        "GARAGE": "GARAJ",
+        "SETTINGS": "AYARLAR"
+    },
+    "GAME": {
+        "LEVEL": "Seviye",
+        "PAUSED": "DURAKLATILDI",
+        "RESUME": "Devam Et",
+        "QUIT": "Çıkış",
+        "LEVEL_COMPLETE": "BÖLÜM TAMAMLANDI",
+        "LEVEL_FAILED": "BAŞARISIZ",
+        "NEXT": "Sonraki Bölüm",
+        "RETRY": "Tekrar Dene"
+    },
+    "GARAGE": {
+        "BUY": "Satın Al",
+        "SELECT": "Seç",
+        "SELECTED": "Seçildi",
+        "LOCKED": "Kilitli",
+        "INSUFFICIENT_FUNDS": "Yetersiz Bakiye"
+    },
+    "TUTORIAL": {
+        "STEER": "Direksiyonu çevirerek yön ver",
+        "GAS": "İlerlemek için gaza bas",
+        "BRAKE": "Durmak için frene bas",
+        "GEAR": "Geri gitmek için vitesi değiştir"
+    }
+}

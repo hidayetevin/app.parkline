@@ -1,0 +1,81 @@
+/* Global Styles */
+@import '@ionic/angular/css/core.css';
+@import '@ionic/angular/css/normalize.css';
+@import '@ionic/angular/css/structure.css';
+@import '@ionic/angular/css/typography.css';
+@import '@ionic/angular/css/display.css';
+@import '@ionic/angular/css/padding.css';
+@import '@ionic/angular/css/float-elements.css';
+@import '@ionic/angular/css/text-alignment.css';
+@import '@ionic/angular/css/text-transformation.css';
+@import '@ionic/angular/css/flex-utils.css';
+
+:root {
+  /* Park Master Colors - Analysis Section 12.2 */
+  --park-primary: #FF6B35;
+  --park-secondary: #004E89;
+  --park-accent: #EFEFD0;
+  --park-bg: #1A1A2E;
+  --park-surface: #16213E;
+  
+  --park-success: #2ECC71;
+  --park-danger: #E74C3C;
+  --park-warning: #F1C40F;
+
+  --park-text-primary: #FFFFFF;
+  --park-text-secondary: #AAAAAA;
+
+  /* Typography - Analysis Section 12.7 */
+  --ion-font-family: 'Inter', sans-serif;
+  
+  /* Ionic Overrides */
+  --ion-background-color: var(--park-bg);
+  --ion-text-color: var(--park-text-primary);
+  --ion-color-primary: var(--park-primary);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Common UI Elements */
+.park-btn {
+  --background: var(--park-primary);
+  --color: #fff;
+  --border-radius: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 8px 0;
+  box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
+}
+
+.park-card {
+  background: var(--park-surface);
+  border-radius: 16px;
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.park-title {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--park-text-primary);
+  text-shadow: 0 4px 0 rgba(0,0,0,0.2);
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Animations */
+@keyframes slideUp {
+  from { transform: translateY(50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.4s ease-out forwards;
+}
