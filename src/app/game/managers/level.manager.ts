@@ -141,7 +141,8 @@ export class LevelManager {
         scene: THREE.Scene,
         physicsWorld: CANNON.World
     ): { parkingZone: ParkingZone; obstacles: THREE.Mesh[] } {
-        // Create ground (already exists in SceneManager, skip for now)
+        // Create procedural environment (city, roads, buildings)
+        this.buildProceduralEnvironment(blueprint, scene, physicsWorld);
 
         // Create parking zone
         const parkingZone = this.createParkingZone(blueprint, scene, physicsWorld);
@@ -150,6 +151,86 @@ export class LevelManager {
         const obstacles = this.createObstacles(blueprint, scene, physicsWorld);
 
         return { parkingZone, obstacles };
+    }
+
+    /**
+     * Generate procedural city environment
+     */
+    private buildProceduralEnvironment(blueprint: LevelBlueprint, scene: THREE.Scene, world: CANNON.World): void {
+        // 1. Asphalt Ground
+        const groundGeo = new THREE.PlaneGeometry(100, 100);
+        const groundMat = new THREE.MeshStandardMaterial({
+            color: 0x333333,
+            roughness: 0.8,
+            metalness: 0.1
+        });
+        const ground = new THREE.Mesh(groundGeo, groundMat);
+        ground.rotation.x = -Math.PI / 2;
+        ground.receiveShadow = true;
+        scene.add(ground);
+
+        // Ground Physics
+        const groundShape = new CANNON.Plane();
+        const groundBody = new CANNON.Body({ mass: 0, material: new CANNON.Material({ friction: 0.7 }) }); // High friction asphalt
+        groundBody.addShape(groundShape);
+        groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
+        world.addBody(groundBody);
+
+        // 2. Road Stripes (Visual only)
+        const stripeGeo = new THREE.PlaneGeometry(0.5, 4);
+        const stripeMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+
+        for (let i = -4; i < 5; i++) {
+            const stripe = new THREE.Mesh(stripeGeo, stripeMat);
+            stripe.rotation.x = -Math.PI / 2;
+            stripe.position.set(0, 0.02, i * 10); // Center line
+            scene.add(stripe);
+        }
+
+        // 3. Buildings (Random Boxes around play area)
+        const buildingGeo = new THREE.BoxGeometry(10, 20, 10);
+        const buildingMat = new THREE.MeshStandardMaterial({ color: 0x888888, roughness: 0.6 });
+        const winMat = new THREE.MeshStandardMaterial({ color: 0xaaaaff, emissive: 0x222244 });
+
+        // Place buildings on sides
+        const positions = [
+            { x: -20, z: 10 }, { x: -20, z: -10 }, { x: -20, z: 30 },
+            { x: 20, z: 10 }, { x: 20, z: -10 }, { x: 20, z: 30 },
+            { x: 0, z: -30 }
+        ];
+
+        positions.forEach(pos => {
+            const height = 10 + Math.random() * 20;
+            const building = new THREE.Mesh(
+                new THREE.BoxGeometry(15, height, 15),
+                (Math.random() > 0.7) ? winMat : buildingMat
+            );
+            building.position.set(pos.x, height / 2, pos.z);
+            building.castShadow = true;
+            building.receiveShadow = true;
+            scene.add(building);
+
+            // Building Physics (Static)
+            const bShape = new CANNON.Box(new CANNON.Vec3(7.5, height / 2, 7.5));
+            const bBody = new CANNON.Body({ mass: 0 });
+            bBody.addShape(bShape);
+            bBody.position.copy(building.position as any);
+            world.addBody(bBody);
+        });
+
+        // 4. Sidewalks
+        const walkGeo = new THREE.BoxGeometry(50, 0.2, 100);
+        const walkMat = new THREE.MeshStandardMaterial({ color: 0xcccccc });
+
+        const leftWalk = new THREE.Mesh(walkGeo, walkMat);
+        leftWalk.position.set(-35, 0.1, 0);
+        leftWalk.receiveShadow = true;
+        scene.add(leftWalk);
+
+        const rightWalk = new THREE.Mesh(walkGeo, walkMat);
+        rightWalk.position.set(35, 0.1, 0);
+        rightWalk.receiveShadow = true;
+        scene.add(rightWalk);
     }
 
     /**

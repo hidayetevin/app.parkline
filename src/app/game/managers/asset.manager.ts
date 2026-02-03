@@ -64,18 +64,7 @@ export class AssetManager {
             return carModel.scene.clone();
         } catch (error) {
             console.warn(`Failed to load car: ${carId}, returning placeholder`, error);
-
-            // Create placeholder car (Box)
-            const geometry = new THREE.BoxGeometry(2, 1, 4.5);
-            const material = new THREE.MeshLambertMaterial({ color: 0xFF0000 });
-            const mesh = new THREE.Mesh(geometry, material);
-            const group = new THREE.Group();
-            group.add(mesh);
-
-            // Align to bottom
-            mesh.position.y = 0.5;
-
-            return group;
+            return this.createFallbackCar() as THREE.Group;
         }
     }
 
@@ -241,5 +230,71 @@ export class AssetManager {
         this.carCache.clear();
         this.levelCache.forEach(entry => this.disposeLevel(entry.data));
         this.levelCache.clear();
+    }
+
+    private createFallbackCar(): THREE.Object3D {
+        const carGroup = new THREE.Group();
+
+        // 1. Car Chassis (Main Body)
+        const chassisGeometry = new THREE.BoxGeometry(2, 0.5, 4.5);
+        const chassisMaterial = new THREE.MeshStandardMaterial({ color: 0xff4444, metalness: 0.7, roughness: 0.2 }); // Red Sport
+        const chassis = new THREE.Mesh(chassisGeometry, chassisMaterial);
+        chassis.position.y = 0.5;
+        chassis.castShadow = true;
+        carGroup.add(chassis);
+
+        // 2. Cabin (Top part)
+        const cabinGeometry = new THREE.BoxGeometry(1.8, 0.4, 2.5);
+        const cabinMaterial = new THREE.MeshStandardMaterial({ color: 0x333333, metalness: 0.9, roughness: 0.1 }); // Dark glass/roof
+        const cabin = new THREE.Mesh(cabinGeometry, cabinMaterial);
+        cabin.position.y = 1.0;
+        cabin.position.z = -0.2;
+        cabin.castShadow = true;
+        carGroup.add(cabin);
+
+        // 3. Wheels
+        const wheelGeometry = new THREE.CylinderGeometry(0.35, 0.35, 0.2, 16);
+        const wheelMaterial = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.9 });
+        wheelGeometry.rotateZ(Math.PI / 2);
+
+        const wheelPositions = [
+            { x: 1, y: 0.35, z: 1.5 },   // Front Right
+            { x: -1, y: 0.35, z: 1.5 },  // Front Left
+            { x: 1, y: 0.35, z: -1.5 },  // Rear Right
+            { x: -1, y: 0.35, z: -1.5 }  // Rear Left
+        ];
+
+        wheelPositions.forEach(pos => {
+            const wheel = new THREE.Mesh(wheelGeometry, wheelMaterial);
+            wheel.position.set(pos.x, pos.y, pos.z);
+            wheel.castShadow = true;
+            carGroup.add(wheel);
+        });
+
+        // 4. Headlights (Front)
+        const lightGeometry = new THREE.BoxGeometry(0.4, 0.2, 0.1);
+        const lightMaterial = new THREE.MeshStandardMaterial({ color: 0xffffcc, emissive: 0xffffcc, emissiveIntensity: 2 });
+
+        const leftLight = new THREE.Mesh(lightGeometry, lightMaterial);
+        leftLight.position.set(-0.6, 0.6, 2.25);
+        carGroup.add(leftLight);
+
+        const rightLight = new THREE.Mesh(lightGeometry, lightMaterial);
+        rightLight.position.set(0.6, 0.6, 2.25);
+        carGroup.add(rightLight);
+
+        // 5. Taillights (Rear)
+        const tailGeometry = new THREE.BoxGeometry(0.4, 0.2, 0.1);
+        const tailMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000, emissive: 0xff0000, emissiveIntensity: 1 });
+
+        const leftTail = new THREE.Mesh(tailGeometry, tailMaterial);
+        leftTail.position.set(-0.6, 0.6, -2.25);
+        carGroup.add(leftTail);
+
+        const rightTail = new THREE.Mesh(tailGeometry, tailMaterial);
+        rightTail.position.set(0.6, 0.6, -2.25);
+        carGroup.add(rightTail);
+
+        return carGroup;
     }
 }
